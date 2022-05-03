@@ -1,28 +1,41 @@
-// c//Parametry pro visual studio code compiler
-void GetParamFromFS2020();
-void StoreData();
-void PrintFromFSArray();
-void CalcMeanValue();
-void SendToDisplay();
-void dispeffect();
+// BasicEncoder - Version: Latest
 
-#include <Arduino.h>
+/*/ c//Parametry pro visual studio code compiler
+  void GetParamFromFS2020();
+  void StoreData();
+  void PrintFromFSArray();
+  void CalcMeanValue();
+  void SendToDisplay();
+  void dispeffect();
+*/
+//#include <Arduino.h>
 #include <BasicEncoder.h> // Rotary encoder library
-#include "LEDDisplayDriver.h"
+#include <LEDDisplayDriver.h>
 
-/*************************************************************
- DEFINICE DISPLAY
-// This module is tested with a MAX7219 module with 8 digits
-// Manual for library: http://lygte-info.dk/project/DisplayDriver%20UK.html
-// By HKJ from lygte-info.dk
-*************************************************************/
-/*************************************************************
- POZOR V KNIHOVNE LEDDISPLAYDRIVE.H se musi odkomentovat MAX7219 pro tento typ.
- *************************************************************/
+//************************************************************/
+/*
+  Knihovna je:
+  By HKJ from lygte-info.dk
+  ale musi se v ni editovat radek! Odkomentovat.
+  v souboru LEDDisplayDriver.cpp
+  radek 35.  #define _MAX7219_       // 3 pin connection
+  jinou definici zakomentovat!
+
+**************************************************************
+  DEFINICE DISPLAY
+  // This module is tested with a MAX7219 module with 8 digits
+  // Manual for library: http://lygte-info.dk/project/DisplayDriver%20UK.html
+  // By HKJ from lygte-info.dk
+*************************************************************
+*************************************************************
+  POZOR V KNIHOVNE LEDDISPLAYDRIVE.H se musi odkomentovat MAX7219 pro tento typ.
+  /*************************************************************/
 #ifndef _MAX7219_
 #error "_MAX7219_ must be defined in LEDDisplayDriver.h for this sketch to work"
 #endif
-//*************************************************************************
+/**************************************************************************/
+
+
 // Define the pins used for the display connection
 #define D1_DIN_PIN 6 // PINY DISPLAY1 (clk na interupt pin)
 #define D1_CLK_PIN 5
@@ -80,8 +93,8 @@ const byte PIN_DIO = 6; // define DIO pin (any digital pin) DISPLAY LED PANEL PI
 
 /*************************************************************
                      GLOBAL VARIABLES
-// Pins D2 & D3 must be used on the Arduino Nano to manage hardware
-// interrupts provided by rotation of the encoder.
+  // Pins D2 & D3 must be used on the Arduino Nano to manage hardware
+  // interrupts provided by rotation of the encoder.
 */
 
 int EncoderPin1 = 3;
@@ -106,11 +119,11 @@ t_FromFS FromFS;
 // Array storing all the parameters received from FS2020
 // Each "value" field is filled by GetParamFromFS2020()
 t_FromFS FromFSArray[NUM_FS_PARAM] = {
-    {ID_QFE, -1, "0"},         // 0   557 (identifikatory FS2020TA)
-    {ID_ALTITUDE, -1, "0"},    // 1   431
-    {ID_AIRSPEED, -1, "0"},    // 2   37
-    {ID_VARIOMETER, -1, "0"},  // 3   763
-    {ID_FLAPS_HANDL, -1, "0"}, // 4   248
+  {ID_QFE, -1, "0"},         // 0   557 (identifikatory FS2020TA)
+  {ID_ALTITUDE, -1, "0"},    // 1   431
+  {ID_AIRSPEED, -1, "0"},    // 2   37
+  {ID_VARIOMETER, -1, "0"},  // 3   763
+  {ID_FLAPS_HANDL, -1, "0"}, // 4   248
 
 };
 
@@ -143,7 +156,6 @@ byte kolecka[] = {digitDeg, digitDeg, digitMinus, digitBottom, digitBottom, digi
 void setup()
 {
 
-
   display.begin();
   display2.begin();
   display3.begin();
@@ -152,10 +164,10 @@ void setup()
   dispeffect(1); // Display effect during start WORKING PROGRESS
 
 
-display.setBrightness(9);
-   display.setBrightness(9);
- display.setBrightness(9);
- 
+  display.setBrightness(9);
+  display.setBrightness(9);
+  display.setBrightness(9);
+
   display.clear();
   display2.clear();
   display3.clear();
@@ -164,7 +176,7 @@ display.setBrightness(9);
 
 
 
-  Serial.begin(115200); // initializes the Serial connection @ 9600 baud
+  Serial.begin(9600); // initializes the Serial connection @ 9600 baud
   Serial.setTimeout(3);
 
   pinMode(BTN_ENC, INPUT_PULLUP);
@@ -184,9 +196,9 @@ void loop()
   String strTmp;
   // int     int_tmp;
   GetParamFromFS2020(); // Shows flight parameters   // Reads a parameter from FS stores it into FromFSArray[]
- 
- // PrintFromFSArray(); // DEBUG print to serial port
- 
+
+  // PrintFromFSArray(); // DEBUG print to serial port
+
   ShowFlightParam();
 } // end loop
 
@@ -225,7 +237,7 @@ void GetParamFromFS2020()
   }
 } // GetParamFromFS2020()
 /***********************************************************
- * Dummy function useful for some DEBUGGING
+   Dummy function useful for some DEBUGGING
  ***********************************************************/
 void PrintFromFSArray()
 {
@@ -266,7 +278,7 @@ void ShowFlightParam()
 {
   // Update the aircraft VERTICAL SPEED
   CalcMeanValue(VAL_VARIO, FromFSArray[POS_VARIOMETER].value.toInt());
-  
+
 
   // Update the ALTITUDE
   CalcMeanValue(VAL_ALT, FromFSArray[POS_ALTITUDE].value.toInt());
@@ -303,22 +315,22 @@ void CalcMeanValue(long int type, long int val)
 
 /***********************************************************
   SendToDisplay()
- For processing display writes
+  For processing display writes
  ***********************************************************/
 void SendToDisplay()
 {
   display.showText(FromFSArray[POS_VARIOMETER].value, 0, 3); // zapis do display1
   display.showText(FromFSArray[POS_AIRSPEED].value, 5, 3);   // zapis do display1
 
-  display2.showText(FromFSArray[POS_FLP_HAND].value, 0, 2); // zapis do display2
-  display2.showText(FromFSArray[POS_ALTITUDE].value, 3, 5); // zapis do display2
+  display3.showText(FromFSArray[POS_FLP_HAND].value, 0, 2); // zapis do display2
+  display3.showText(FromFSArray[POS_ALTITUDE].value, 3, 5); // zapis do display2
 
-  display3.showText(FromFSArray[POS_QFE].value, 0, 5); // zapis do display3
-  display3.showText("QFE", 5, 3);                      // zapis do display jednotky
+  display2.showText(FromFSArray[POS_QFE].value, 0, 5); // zapis do display3
+  display2.showText("QFE", 6, 2);                      // zapis do display jednotky
 }
 
 /***********************************************************
-For testing display and LCD animations
+  For testing display and LCD animations
 ***********************************************************/
 void dispeffect(byte Eff)
 {
