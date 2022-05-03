@@ -12,7 +12,7 @@
 #include <BasicEncoder.h> // Rotary encoder library
 #include <LEDDisplayDriver.h>
 
-//************************************************************/
+//********************POZNAMKA****************************************/
 /*
   Knihovna je:
   By HKJ from lygte-info.dk
