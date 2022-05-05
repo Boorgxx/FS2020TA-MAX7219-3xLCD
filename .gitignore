@@ -1,7 +1,41 @@
 # File created using '.gitignore Generator' for Visual Studio Code: https://bit.ly/vscode-gig
 
-# Created by https://www.toptal.com/developers/gitignore/api/git,macos,platformio,visualstudiocode
-# Edit at https://www.toptal.com/developers/gitignore?templates=git,macos,platformio,visualstudiocode
+# Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,platformio,macos,git,c++
+# Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,platformio,macos,git,c++
+
+### C++ ###
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:
@@ -83,9 +117,7 @@ Temporary Items
 # Ignore code-workspaces
 *.code-workspace
 
-# End of https://www.toptal.com/developers/gitignore/api/git,macos,platformio,visualstudiocode
+# End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,platformio,macos,git,c++
 
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
-
-
 

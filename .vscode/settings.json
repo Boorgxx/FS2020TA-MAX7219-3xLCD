@@ -1,23 +1,5 @@
 {
     "files.exclude": {
-        "**/.git": false,
-        "**/.svn": false,
-        "**/.hg": false,
-        "**/CVS": false,
-        "**/.DS_Store": false,
-        "**/Thumbs.db": false,
-        "**/.pio": false,
-        ".vscode/.browse.c_cpp.db*": false,
-        ".vscode/c_cpp_properties.json": false,
-        ".vscode/launch.json": false,
-        ".vscode/ipch": false,
-        "**/ vscode": false,
-        "**/.vscode": false,
-        "**/include": false,
-        "**/platformio.ini": false,
-        "**/.gitignore": false
-    },
-    "explorerExclude.backup": {
         "**/.git": true,
         "**/.svn": true,
         "**/.hg": true,
@@ -33,6 +15,11 @@
         "**/.vscode": true,
         "**/include": true,
         "**/platformio.ini": true,
-        "**/.gitignore": true
-    }
+        "**/.gitignore": true,
+        "**/test": true,
+        "test": true,
+        "**/Users": true,
+        "Users": true
+    },
+    "explorerExclude.backup": null
 }
