@@ -1,6 +1,10 @@
+platformio.ini
+.gitignore
+.vscode
 test
 .DS_Store
 Users
+
 
 # File created using '.gitignore Generator' for Visual Studio Code: https://bit.ly/vscode-gig
 
