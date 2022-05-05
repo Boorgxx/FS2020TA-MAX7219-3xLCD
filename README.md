@@ -5,8 +5,8 @@ For FLightsimulator 2020 <br />
 
 Based on:
 
-# https://github.com/Seahawk240/Microsoft-FS2020-To-Arduino
-# https://github.com/IWILZ/FS2020-Switch-Panel
+###### https://github.com/Seahawk240/Microsoft-FS2020-To-Arduino
+###### https://github.com/IWILZ/FS2020-Switch-Panel
 
 
 <pre>
