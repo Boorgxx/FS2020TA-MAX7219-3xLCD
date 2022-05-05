@@ -1,16 +1,5 @@
-// BasicEncoder - Version: Latest
-
-/*/ c//Parametry pro visual studio code compiler
-  void GetParamFromFS2020();
-  void StoreData();
-  void PrintFromFSArray();
-  void CalcMeanValue();
-  void SendToDisplay();
-  void dispeffect();
-*/
-//#include <Arduino.h>
 #include <BasicEncoder.h> // Rotary encoder library
-#include <LEDDisplayDriver.h>
+#include <LEDDisplayDriver.h> //LEDDisplayDriver library
 
 //********************POZNAMKA****************************************/
 /*
@@ -29,12 +18,11 @@
 *************************************************************
 *************************************************************
   POZOR V KNIHOVNE LEDDISPLAYDRIVE.H se musi odkomentovat MAX7219 pro tento typ.
-  /*************************************************************/
+/*************************************************************/
 #ifndef _MAX7219_
 #error "_MAX7219_ must be defined in LEDDisplayDriver.h for this sketch to work"
 #endif
 /**************************************************************************/
-
 
 // Define the pins used for the display connection
 #define D1_DIN_PIN 6 // PINY DISPLAY1 (clk na interupt pin)
@@ -100,8 +88,8 @@ const byte PIN_DIO = 6; // define DIO pin (any digital pin) DISPLAY LED PANEL PI
 int EncoderPin1 = 3;
 int EncoderPin2 = 2;
 
-long int ValArray[2][N_VAL];     // Used by CalcMeanValue()
-long int MeanVal;                // Used by CalcMeanValue()
+long int ValArray[2][N_VAL]; // Used by CalcMeanValue()
+long int MeanVal;            // Used by CalcMeanValue()
 
 //*********** Few vars useful for some debugging ****************/
 unsigned long time_prev = 0L, time_now = 0L;
@@ -119,11 +107,11 @@ t_FromFS FromFS;
 // Array storing all the parameters received from FS2020
 // Each "value" field is filled by GetParamFromFS2020()
 t_FromFS FromFSArray[NUM_FS_PARAM] = {
-  {ID_QFE, -1, "0"},         // 0   557 (identifikatory FS2020TA)
-  {ID_ALTITUDE, -1, "0"},    // 1   431
-  {ID_AIRSPEED, -1, "0"},    // 2   37
-  {ID_VARIOMETER, -1, "0"},  // 3   763
-  {ID_FLAPS_HANDL, -1, "0"}, // 4   248
+    {ID_QFE, -1, "0"},         // 0   557 (identifikatory FS2020TA)
+    {ID_ALTITUDE, -1, "0"},    // 1   431
+    {ID_AIRSPEED, -1, "0"},    // 2   37
+    {ID_VARIOMETER, -1, "0"},  // 3   763
+    {ID_FLAPS_HANDL, -1, "0"}, // 4   248
 
 };
 
@@ -163,7 +151,6 @@ void setup()
   dispeffect(0); // Display effect during start 0 = just Hello
   dispeffect(1); // Display effect during start WORKING PROGRESS
 
-
   display.setBrightness(9);
   display.setBrightness(9);
   display.setBrightness(9);
@@ -171,10 +158,6 @@ void setup()
   display.clear();
   display2.clear();
   display3.clear();
-
-
-
-
 
   Serial.begin(9600); // initializes the Serial connection @ 9600 baud
   Serial.setTimeout(3);
@@ -278,7 +261,6 @@ void ShowFlightParam()
 {
   // Update the aircraft VERTICAL SPEED
   CalcMeanValue(VAL_VARIO, FromFSArray[POS_VARIOMETER].value.toInt());
-
 
   // Update the ALTITUDE
   CalcMeanValue(VAL_ALT, FromFSArray[POS_ALTITUDE].value.toInt());
