@@ -1,28 +1,21 @@
-#include <BasicEncoder.h> // Rotary encoder library
+//* INFO V.1.1. Boorgxx 3LCD MAX2119 FS2020TA - duben2022
+
+/**-----------------------------------------------------------------------------------------------------------------------
+  DEFINICE DISPLAY
+  This module is tested with a MAX7219 module with 8 digits
+  Manual for library: http://lygte-info.dk/project/DisplayDriver%20UK.html
+  By HKJ from lygte-info.dk
+  For MAX7219 edit library *.h file (uncoment MAX..)
+ *-----------------------------------------------------------------------------------------------------------------------**/
+
+#include <BasicEncoder.h>     // Rotary encoder library
 #include <LEDDisplayDriver.h> //LEDDisplayDriver library
 
-//********************POZNAMKA****************************************/
-/*
-  Knihovna je:
-  By HKJ from lygte-info.dk
-  ale musi se v ni editovat radek! Odkomentovat.
-  v souboru LEDDisplayDriver.cpp
-  radek 35.  #define _MAX7219_       // 3 pin connection
-  jinou definici zakomentovat!
-
-**************************************************************
-  DEFINICE DISPLAY
-  // This module is tested with a MAX7219 module with 8 digits
-  // Manual for library: http://lygte-info.dk/project/DisplayDriver%20UK.html
-  // By HKJ from lygte-info.dk
-*************************************************************
-*************************************************************
-  POZOR V KNIHOVNE LEDDISPLAYDRIVE.H se musi odkomentovat MAX7219 pro tento typ.
 /*************************************************************/
 #ifndef _MAX7219_
 #error "_MAX7219_ must be defined in LEDDisplayDriver.h for this sketch to work"
 #endif
-/**************************************************************************/
+/*************************************************************/
 
 // Define the pins used for the display connection
 #define D1_DIN_PIN 6 // PINY DISPLAY1 (clk na interupt pin)
@@ -57,12 +50,13 @@ char serialBuffer[BUFFER_SIZE]; // initialize global serial buffer
 const byte PIN_CLK = 7; // define CLK pin (any digital pin) DISPLAY LED PANEL PIN
 const byte PIN_DIO = 6; // define DIO pin (any digital pin) DISPLAY LED PANEL PIN
 
-#define N_VAL 10    // Number of values used by CalcMeanValue() - how many values to mean.
-#define VAL_ALT 0   // CalcMeanValue() works on Altitude values
-#define VAL_VARIO 1 // CalcMeanValue() works on Vertical Speed values
-#define VAL_AIS 0   // Air speed value
-#define VAL_QFE 1   // CalcMeanValue() PLANE ALT ABOVE GROUND
-#define VAL_FLAPS 0 // For flaps state handeling
+#define N_STATUS_MAIN 3 // Number of states of the finite-state machine on the Radio LCD
+#define N_VAL 10        // Number of values used by CalcMeanValue() - how many values to mean.
+#define VAL_ALT 0       // CalcMeanValue() works on Altitude values
+#define VAL_VARIO 1     // CalcMeanValue() works on Vertical Speed values
+#define VAL_AIS 0       // Air speed value
+#define VAL_QFE 1       // CalcMeanValue() PLANE ALT ABOVE GROUND
+#define VAL_FLAPS 0     // For flaps state handeling
 
 // Editing buttons
 #define BTN_ENC A1 // D4 - Encoder button x "Start editing" & "CONFIRM new value"
@@ -71,6 +65,7 @@ const byte PIN_DIO = 6; // define DIO pin (any digital pin) DISPLAY LED PANEL PI
 /*************************************************************
              Parameter IDs received from FS2020
 *************************************************************/
+
 #define ID_AIRSPEED 37     // AIRSPEED INDICATED
 #define ID_ALTITUDE 431    // INDICATED ALTITUDE
 #define ID_QFE 557         // PLANE ALT ABOVE GROUND
@@ -81,9 +76,10 @@ const byte PIN_DIO = 6; // define DIO pin (any digital pin) DISPLAY LED PANEL PI
 
 /*************************************************************
                      GLOBAL VARIABLES
-  // Pins D2 & D3 must be used on the Arduino Nano to manage hardware
-  // interrupts provided by rotation of the encoder.
-*/
+*************************************************************/
+
+// Pins D2 & D3 must be used on the Arduino Nano to manage hardware
+// interrupts provided by rotation of the encoder.
 
 int EncoderPin1 = 3;
 int EncoderPin2 = 2;
@@ -95,7 +91,7 @@ long int MeanVal;            // Used by CalcMeanValue()
 unsigned long time_prev = 0L, time_now = 0L;
 String dummy, tmp_str;
 
-// ************** Struct of data received from FS2020 ******************
+//************** Struct of data received from FS2020 ******************
 struct t_FromFS
 {
   int id;
@@ -123,6 +119,13 @@ t_FromFS FromFSArray[NUM_FS_PARAM] = {
 #define POS_FLP_HAND 4   // FLAPS HANDLE PERCENT
 
 BasicEncoder encoder(EncoderPin1, EncoderPin2);
+
+// *****************************************************
+// Starting status of the main finite-state machine
+int StatusMain = 1, PrevStatusMain = -1;
+// There is also a secondary finite-state machine for the
+// editing functions of NAV (with OBS) and ADF (with HDG).
+int StatusEdit;
 
 // ***********************************************************************
 // Interrupt Service Routine --> detects each "click" of the encoder
@@ -179,10 +182,67 @@ void loop()
   String strTmp;
   // int     int_tmp;
   GetParamFromFS2020(); // Shows flight parameters   // Reads a parameter from FS stores it into FromFSArray[]
-
   // PrintFromFSArray(); // DEBUG print to serial port
 
+  // Updates the status of the finite-state machine checking the encoder "clicks"
+  StatusMain += encoder.get_change();
+  if (StatusMain < 1)
+    StatusMain = N_STATUS_MAIN - StatusMain;
+  if (StatusMain > N_STATUS_MAIN)
+    StatusMain = StatusMain - N_STATUS_MAIN;
+
   ShowFlightParam();
+
+  // Reads again a parameter from FS stores it into FromFSArray[]
+  // in this way i can update the parameter list 2 times/loop
+  GetParamFromFS2020();
+
+
+
+
+/**-----------------------------------------------------------------------------------------------------------------------
+ **                                                    MENU
+ *-----------------------------------------------------------------------------------------------------------------------**/
+  // What is the current status?
+  switch (StatusMain) {
+    case 1: //  
+      if (PrevStatusMain != 1) {
+      //* INFO   ShowDisplayAltituted(); 
+      }
+     
+      //  neco delej
+     
+      PrevStatusMain = 1;
+      break;
+
+    case 2: // ADF & HDG
+      // The Radio LCD layout is drawn every time the previous status was different 
+      if (PrevStatusMain != 2) {
+             //*  NECO DeleJ 
+
+      }
+     //*  NECO DeleJ 
+      PrevStatusMain = 2;
+      break;
+
+    case 3: // Edit Nav1 (stdby) & OBS1
+      // The Radio LCD layout is drawn every time the previous status was different 
+      if (PrevStatusMain != 3) {
+             //*  NECO DeleJ 
+ 
+      }
+      // Read stby freq of NAV1 from the array
+      //* INFO  NECO DELEJ
+
+      // Is the encoder button pressed? (to start editing)
+      if (ButtonActive(BTN_ENC)) {
+       //*  NECO DeleJ 
+
+      }
+      PrevStatusMain = 3;
+      break;
+  } // switch
+
 } // end loop
 
 /***********************************************************
@@ -304,12 +364,40 @@ void SendToDisplay()
   display.showText(FromFSArray[POS_VARIOMETER].value, 0, 3); // zapis do display1
   display.showText(FromFSArray[POS_AIRSPEED].value, 5, 3);   // zapis do display1
 
-  display3.showText(FromFSArray[POS_FLP_HAND].value, 0, 2); // zapis do display2
-  display3.showText(FromFSArray[POS_ALTITUDE].value, 3, 5); // zapis do display2
+  display2.showText(FromFSArray[POS_FLP_HAND].value, 0, 2); // zapis do display2
+  display2.showText(FromFSArray[POS_ALTITUDE].value, 3, 5); // zapis do display2
 
-  display2.showText(FromFSArray[POS_QFE].value, 0, 5); // zapis do display3
-  display2.showText("QFE", 6, 2);                      // zapis do display jednotky
+  display3.showText(FromFSArray[POS_QFE].value, 0, 5); // zapis do display3
+  display3.showText("QFE", 6, 2);                      // zapis do display jednotky
 }
+
+
+/***********************************************************
+   ButtonActive 
+   Checks a button status implementing a simple anti-bounce
+ ***********************************************************/
+bool ButtonActive(byte Button) {
+  bool active = false;
+
+  if (digitalRead(Button) == LOW) {
+    delay(30);
+    if (digitalRead(Button) == LOW) {
+      active = true;
+    }
+  }
+
+  // If button active i will wait until it will be released
+  if (active) {
+    do {
+      // just wait for the release
+    } while (digitalRead(Button) == LOW);
+    // delay anti-bounce
+    delay(20);
+    return (true);
+  }
+  else return (false);
+} // ButtonActive()
+
 
 /***********************************************************
   For testing display and LCD animations
